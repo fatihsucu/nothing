@@ -4,18 +4,14 @@
 import pymongo
 import re, collections
 
-db_dic = pymongo.MongoClient()["dictionary"]
-coll_dic = db_dic["wordlist"]
-db = pymongo.MongoClient()["bigdugong_dev"]
-coll = db["stream"]
 
 
-#data = list(coll.find().limit(100))
 
 
-#contents =  [item["text"] for item in data]
 
-#dictionary = {}
+
+
+dictionary = {}
 
 
 def words(text): return re.findall('[a-z]+', text.lower()) 
@@ -109,16 +105,3 @@ def levenshtein(word1, word2):
     return distances[len(word1) - 1, len(word2) - 1]
 
 
-record = coll_dic.find_one({"letter":"a"})
-words = record["words"]
-ekler = []
-for i in words:    
-    for word in words:
-        if i in word:
-            if word == i:
-                continue
-            ek_length =  len(word) - len(i)
-            print ek_length
-            print i
-            print word
-            
