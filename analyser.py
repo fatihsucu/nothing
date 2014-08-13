@@ -56,8 +56,6 @@ def find_unique_words(content_list):
 
     return word_list
 
-
-
 def found_noun_species(text):
     tamlama_ekleri =  ["in","un","ın","ün"]
     tamlanan_ekleri = ["i","u","ü","ı"]
@@ -105,3 +103,25 @@ def levenshtein(word1, word2):
     return distances[len(word1) - 1, len(word2) - 1]
 
 
+f = open("dirtydatabase_words_tr.txt","r")
+words = f.readlines()
+print len(words)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for word in words:
+    for i in words:
+        if word.lower() in i.lower():
+            ek = i.replace(word, "")
+            print ek.decode('latin-1').encode('utf8')
