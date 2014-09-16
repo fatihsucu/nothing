@@ -44,8 +44,10 @@ def get_text_content(url):
         text = line.get_text().encode('utf8')
         #print dir(re)
         pat = re.findall("[A-Za-z]+", text.decode('utf8'))
+        print pat
         
             
 
 
 
+get_text_content("http://www.sabah.com.tr")
