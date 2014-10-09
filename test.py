@@ -1,4 +1,6 @@
 from __future__ import division
+import itertools
+
 data = [
 
 [["A","B","C"],["F"]],
@@ -16,21 +18,17 @@ data = [
 def find_pgs(word, phrase_group):
     for phrase in phrase_group:
         if not word in phrase:
-            return False
+            continue
         else:
             return True
+    return False
 
 def pull_other_words(wordlist, word):
-    wordlist.remove(word)
-    return wordlist
-
-for d in data:    
-    if find_pgs(["A"],d):
-        for p in d:
-            related_words = pull_other_words(p,["A"])
-            print related_words
-
-
+    try:
+        wordlist.remove(word)
+        return wordlist
+    except:
+        return None
 
 def get_phrase_group_id(word):
     pg_ids = []
@@ -46,6 +44,7 @@ def find_indexes(word1, word2):
     word1_pgs = get_phrase_group_id(word1)
     word2_pgs = get_phrase_group_id(word2)
     return set(word1_pgs + word2_pgs)
+
 
 def find_relative_words(word1, word2):
     word1_syns = []
@@ -100,8 +99,58 @@ def check_similarity_ratio(question_list, data_list):
             ratio += phrase_weight
     return ratio
 
+def check_all_words(sentece, data):
+    for word in sentence:
+        if not find_pgs(word, data):
+            return False
+    return True
 
 
-#print check_similarity_ratio([["A"],["B"]],[["A"],["B"],["C"]])
 
+def tag_for_me(sentence):        
+    word_freqs = {}
+    n =  0
+    for d in data:        
+        if not check_all_words(sentence, d):            
+            continue            
+        n = n + 1
+        for phrase in d:
+            for elem in phrase:
+                try:
+                    word_freqs[elem] += 1
+                except:
+                    word_freqs[elem] = 1
 
+    sum_of_words = []
+    for com in itertools.combinations(sentence, 2):
+        sum_of_words += [ list(each) for each in list(find_relative_words(com[0],com[1]))]
+    
+    tags = []
+    
+    if not word_freqs:
+        tags = sentence
+        return tags
+
+    print sum_of_words
+    print word_freqs
+
+    for w in sum_of_words:
+        tg = []
+        for i in w:
+            try:
+                weight = word_freqs[i] / n
+            except:
+                continue
+            if weight == 1:
+                tg.append(i)
+
+        tags.append(tg)
+                
+    return tags
+    
+
+sentence = ["A","R","K"]
+
+print tag_for_me(sentence)
+
+    
