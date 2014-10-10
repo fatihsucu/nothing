@@ -9,7 +9,7 @@ data = [
 [["M"],["A","B"],["K"]],
 [["R"],["A","B","C"],["M"],["K"]],
 [["M"],["A"],["R"],["K"]],
-[["K"],["R","L"]],
+[["K"],["R","L"], ["P"]],
 [["M"],["B"],["O"]],
 [["R"],["F"],["B"]]
 ]
@@ -130,10 +130,7 @@ def tag_for_me(sentence):
     if not word_freqs:
         tags = sentence
         return tags
-
-    print sum_of_words
-    print word_freqs
-
+    
     for w in sum_of_words:
         tg = []
         for i in w:
@@ -141,15 +138,18 @@ def tag_for_me(sentence):
                 weight = word_freqs[i] / n
             except:
                 continue
-            if weight == 1:
+            if weight > 0.5:
                 tg.append(i)
+        
+        if tg in tags:
+            continue
 
         tags.append(tg)
                 
     return tags
     
 
-sentence = ["A","R","K"]
+sentence = ["C","F"]
 
 print tag_for_me(sentence)
 
