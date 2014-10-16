@@ -149,7 +149,7 @@ def tag_for_me(sentence):
     return tags
     
 
-sentence = ["C","F"]
+sentence = ["A","B"]
 
 print tag_for_me(sentence)
 

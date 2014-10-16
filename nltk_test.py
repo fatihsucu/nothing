@@ -1,17 +1,44 @@
-from nltk.corpus import wordnet as wn
-
-def syn(word, lch_threshold=2.26):
-    for net1 in wn.synsets(word):
-        for net2 in wn.all_synsets():
-            try:
-                lch = net1.lch_similarity(net2)
-            except:
-                continue
-            # The value to compare the LCH to was found empirically.
-            # (The value is very application dependent. Experiment!)
-            if lch >= lch_threshold:
-                yield (net1, net2, lch)
+import unirest
 
 
-for x in syn('love'):
-    print x
+
+class Routes(object):
+    data = None
+    """docstring for Routes"""
+    def __init__(self):
+        super(Routes, self).__init__()        
+        self.end = "yalova"
+        self.start = "bursa"
+        if not self.data:
+            self.data = self.make_request(self.end, self.start)
+    
+    def make_request(self, end, start):
+        response = unirest.get("https://montanaflynn-mapit.p.mashape.com/directions?ending={}&starting={}".format(self.end,self.start),
+            headers={"X-Mashape-Key": "qD3iWvWhE6mshvyXTW5QGdvIGd8Kp1VFEUwjsnhuFeUCLoTvHm"}
+            )
+        return response.body
+
+    def get_directions_data(self):        
+        for d in self.data["directions"]:
+            yield d
+
+
+    def get_directions(self):
+        for direction in self.data["directions"]:
+            yield direction["direction"].encode('utf8')
+
+    def get_distance(self):
+        return self.data["distance"]
+
+    def get_duration(self):
+        return self.data["duration"]
+
+    def alert_maneuver(self, direction):
+        try:           
+            if not direction["maneuver"]:
+                return "Continue"
+            else:
+                return direction["maneuver"]
+
+        except:
+            return "Continue"
