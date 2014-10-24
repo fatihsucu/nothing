@@ -22,6 +22,41 @@ data = [
 [["H","J","A"],["R","K"],["L"]]
 ]
 
+def find_overall_syns(word):
+    """
+    Eğer aynı phrase'de geçmeyen çiftler varsa her biri için tek tek kontrol yapar. Ve çogunlugunda 
+    geçerli olan eş anlamlıları kabul eder.
+    """
+    phrase_list = []
+    n = 0
+    for pg in data:
+        for phrase in pg:
+            if word in phrase:
+                n = n + 1
+                phrase_list.append(phrase)
+            else:
+                continue
+    syns_freq = {}
+    for phrase in phrase_list:
+        for a in phrase:
+            try:
+                syns_freq[a] += 1
+            except:
+                syns_freq[a] = 1
+
+    print syns_freq
+    syns = []
+    for key in syns_freq.keys():
+        value = syns_freq[key] 
+        if value/n > 0.5:
+            syns.append(key)
+
+    if not syns:
+        syns.append(word)
+    return syns
+
+
+
 def find_pgs(word, phrase_group):
     """
     Phrase grubunun icerisinde aranan kelimenin olup olmadigi kontrolunu yapar
@@ -168,7 +203,9 @@ def tag_for_me(sentence):
     print "This sentences combines are {}".format(combines)
 
     if not word_freqs:
-        tags = [list(word) for word in sentence]
+        tags = []
+        for i in [word for word in sentence]:
+            tags.append(find_overall_syns(i))
         return tags
     
     for w in combines:
@@ -187,6 +224,6 @@ def tag_for_me(sentence):
         tags.append(tg)
     return tags
     
-sentence = ["K","L"]
+sentence = ["C","F"]
 print tag_for_me(sentence)
 
